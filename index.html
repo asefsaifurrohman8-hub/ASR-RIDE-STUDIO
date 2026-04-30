@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Keuangan - Jual Beli Motor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981; /* Green theme for Motor */
+            --primary-dark: #059669;
+            --secondary: #3b82f6; /* Blue for highlights */
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-main);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        /* Layout Grids */
+        .grid-5 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Summary & Stats */
+        .summary-box {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .summary-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .text-blue { color: var(--secondary); }
+        .text-green { color: var(--primary); }
+        .text-red { color: var(--danger); }
+        .text-orange { color: var(--warning); }
+
+        /* Forms */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .input-control {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            transition: all 0.2s;
+            background: var(--bg);
+            width: 100%;
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: var(--bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:hover td { background: var(--bg); }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-ready { background: #dcfce7; color: #166534; }
+        .badge-sold { background: #f3f4f6; color: #4b5563; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 400px;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        /* Utilities */
+        .mt-4 { margin-top: 20px; }
+        .mb-4 { margin-bottom: 20px; }
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .items-center { align-items: center; }
+        .gap-2 { gap: 10px; }
+
+        @media (max-width: 768px) {
+            .grid-5, .grid-3, .grid-2, .form-row { grid-template-columns: 1fr; }
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="page-title">Sistem Manajemen Keuangan - Jual Beli Motor</div>
+
+    <!-- Header & Setting Modal Awal -->
+    <div class="card mb-4" style="border-left: 4px solid var(--primary);">
+        <div class="flex justify-between items-center" style="flex-wrap: wrap; gap: 15px;">
+            <h2 style="color: var(--primary);">Dashboard Utama</h2>
+            <div class="flex items-center gap-2">
+                <label style="font-weight: 500; font-size: 14px;">Setting Modal Awal:</label>
+                <input type="number" id="mt-modal-awal-input" class="input-control" style="width: 180px; padding: 8px 12px;" onchange="mtSaveModalAwal()" placeholder="Rp 0">
+            </div>
+        </div>
+    </div>
+
+    <!-- Ringkasan Keuangan Motor -->
+    <h3 class="mb-4" style="font-size: 16px;">Ringkasan Keuangan</h3>
+    <div class="grid-5">
+        <div class="summary-box">
+            <div class="summary-label text-orange" style="color: var(--warning); font-weight: 700;">Modal Tertahan (Di Stok)</div>
+            <div class="summary-value" id="mt-total-modal">Rp 0</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Nilai unit belum terjual</div>
+        </div>
+        <div class="summary-box">
+            <div class="summary-label">Total Penjualan</div>
+            <div class="summary-value" id="mt-total-income">Rp 0</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Omset kotor terjual</div>
+        </div>
+        <div class="summary-box">
+            <div class="summary-label text-red" style="font-weight: 700;">Total Pengeluaran</div>
+            <div class="summary-value text-red" id="mt-total-expense">Rp 0</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Biaya operasional & lainnya</div>
+        </div>
+        <div class="summary-box">
+            <div class="summary-label text-green" style="font-weight: 700;">Total Profit Bersih</div>
+            <div class="summary-value text-green" id="mt-total-profit">Rp 0</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Profit Jual - Pengeluaran</div>
+        </div>
+        <div class="summary-box" style="background: #e0f2fe; border-color: #bae6fd;">
+            <div class="summary-label text-blue" style="color: var(--secondary); font-weight: 700;">Saldo Tunai (Kas Aktif)</div>
+            <div class="summary-value text-blue" id="mt-saldo-akhir">Rp 0</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Modal Awal - Tertahan + Profit</div>
+        </div>
+    </div>
+
+    <!-- Statistik Motor -->
+    <div class="grid-3">
+        <div class="summary-box" style="background: var(--surface);">
+            <div class="summary-label">Unit Masuk (Bulan Ini)</div>
+            <div class="summary-value" id="mt-stat-in">0</div>
+        </div>
+        <div class="summary-box" style="background: var(--surface);">
+            <div class="summary-label">Unit Keluar (Bulan Ini)</div>
+            <div class="summary-value" id="mt-stat-out">0</div>
+        </div>
+        <div class="summary-box" style="background: var(--surface);">
+            <div class="summary-label text-orange">Sisa Stok (Belum Terjual)</div>
+            <div class="summary-value text-orange" id="mt-stat-stock">0</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Input Unit Masuk -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="card-title">Input Unit Motor Masuk</div>
+            </div>
+            <form onsubmit="mtAddStock(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal Beli</label>
+                        <input type="date" id="mt-input-date" class="input-control" required>
+                    </div>
+                </div>
+                <div class="form-group mb-4">
+                    <label>Nama Motor / Tipe / Tahun</label>
+                    <input type="text" id="mt-input-name" class="input-control" placeholder="Contoh: Honda Beat 2022" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Harga Beli Dasar</label>
+                        <input type="number" id="mt-input-beli" class="input-control" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Biaya Perbaikan/Pajak</label>
+                        <input type="number" id="mt-input-extra" class="input-control" placeholder="0" required>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Simpan ke Stok</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Input Pengeluaran Operasional -->
+        <div class="card mb-4" style="border-top: 4px solid var(--danger);">
+            <div class="card-header">
+                <div class="card-title text-red">Input Pengeluaran Operasional</div>
+            </div>
+            <form onsubmit="mtAddExpense(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal Pengeluaran</label>
+                        <input type="date" id="exp-input-date" class="input-control" required>
+                    </div>
+                </div>
+                <div class="form-group mb-4">
+                    <label>Keterangan / Rincian</label>
+                    <input type="text" id="exp-input-desc" class="input-control" placeholder="Contoh: Bayar Iklan Olx, Uang Kopi, dll" required>
+                </div>
+                <div class="form-group mb-4">
+                    <label>Nominal Pengeluaran (Rp)</label>
+                    <input type="number" id="exp-input-amount" class="input-control" placeholder="0" required>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-danger">Catat Pengeluaran</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stok Motor (Ready) -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="card-title">Stok Motor (Belum Terjual)</div>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Motor</th>
+                        <th>Tgl Beli</th>
+                        <th>Harga Beli</th>
+                        <th>Biaya Tambahan</th>
+                        <th>Total Modal</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="mt-table-stok">
+                    <!-- Data Stok Motor -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Riwayat Penjualan -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="card-title">Riwayat Penjualan Motor</div>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Motor</th>
+                        <th>Tgl Beli</th>
+                        <th>Tgl Jual</th>
+                        <th>Modal Akhir</th>
+                        <th>Harga Jual</th>
+                        <th>Profit Kotor</th>
+                        <th style="text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="mt-table-terjual">
+                    <!-- Data Motor Terjual -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Riwayat Pengeluaran -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="card-title text-red">Riwayat Pengeluaran Operasional</div>
+            <button class="btn btn-outline btn-sm text-red" onclick="mtResetAllData()">Reset Semua Data App</button>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Nominal</th>
+                        <th style="text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="exp-table-body">
+                    <!-- Data Pengeluaran -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal Penjualan Motor -->
+<div class="modal-overlay" id="sell-modal">
+    <div class="modal-content">
+        <div class="card-header" style="margin-bottom: 15px; padding-bottom: 10px;">
+            <div class="card-title" style="font-size: 16px;">Jual Unit Motor</div>
+        </div>
+        <form onsubmit="mtSubmitSell(event)">
+            <input type="hidden" id="sell-motor-id">
+            <div class="form-group mb-4">
+                <label>Nama Motor</label>
+                <input type="text" id="sell-motor-name" class="input-control" disabled>
+            </div>
+            <div class="form-group mb-4">
+                <label>Tanggal Terjual</label>
+                <input type="date" id="sell-motor-date" class="input-control" required>
+            </div>
+            <div class="form-group mb-4">
+                <label>Harga Jual</label>
+                <input type="number" id="sell-motor-price" class="input-control" required>
+            </div>
+            <div class="flex justify-between mt-4">
+                <button type="button" class="btn btn-outline" onclick="closeSellModal()">Batal</button>
+                <button type="submit" class="btn btn-primary">Proses Penjualan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // ==============================================
+    // UTILITIES
+    // ==============================================
+    function formatRp(angka) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+    }
+
+    function getTodayStr() {
+        const d = new Date();
+        return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+    }
+
+    function isSameMonth(dateStr) {
+        if (!dateStr) return false;
+        const d1 = new Date();
+        const d2 = new Date(dateStr);
+        return d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
+    }
+
+    // Set Default Dates
+    document.getElementById('mt-input-date').value = getTodayStr();
+    document.getElementById('exp-input-date').value = getTodayStr();
+    document.getElementById('sell-motor-date').value = getTodayStr();
+
+    // ==============================================
+    // LOGIC & DATA HANDLING
+    // ==============================================
+
+    // Initialize Data from LocalStorage
+    let mtStok = JSON.parse(localStorage.getItem('motor_stok')) || [];
+    let mtTerjual = JSON.parse(localStorage.getItem('motor_terjual')) || [];
+    let mtPengeluaran = JSON.parse(localStorage.getItem('motor_pengeluaran')) || [];
+    let mtModalAwal = parseFloat(localStorage.getItem('modal_awal_motor')) || 0;
+
+    document.getElementById('mt-modal-awal-input').value = mtModalAwal;
+
+    // --- Modal Awal ---
+    function mtSaveModalAwal() {
+        mtModalAwal = parseFloat(document.getElementById('mt-modal-awal-input').value) || 0;
+        localStorage.setItem('modal_awal_motor', mtModalAwal);
+        mtRender();
+    }
+
+    // --- Motor Masuk (Stok) ---
+    function mtAddStock(e) {
+        e.preventDefault();
+        const date = document.getElementById('mt-input-date').value;
+        const name = document.getElementById('mt-input-name').value;
+        const beli = parseFloat(document.getElementById('mt-input-beli').value);
+        const extra = parseFloat(document.getElementById('mt-input-extra').value) || 0;
+
+        const newItem = {
+            id: 'mt_' + Date.now().toString(),
+            dateBuy: date,
+            name: name,
+            priceBuy: beli,
+            priceExtra: extra,
+            totalModal: beli + extra
+        };
+
+        mtStok.push(newItem);
+        localStorage.setItem('motor_stok', JSON.stringify(mtStok));
+
+        // Reset form
+        document.getElementById('mt-input-name').value = '';
+        document.getElementById('mt-input-beli').value = '';
+        document.getElementById('mt-input-extra').value = '';
+
+        mtRender();
+    }
+
+    function mtDeleteStok(id) {
+        if(confirm('Hapus unit motor ini dari STOK? Modal yang tertahan akan kembali sesuai nilai aslinya.')) {
+            mtStok = mtStok.filter(item => item.id !== id);
+            localStorage.setItem('motor_stok', JSON.stringify(mtStok));
+            mtRender();
+        }
+    }
+
+    // --- Motor Terjual ---
+    function openSellModal(id) {
+        const motor = mtStok.find(m => m.id === id);
+        if(!motor) return;
+
+        document.getElementById('sell-motor-id').value = id;
+        document.getElementById('sell-motor-name').value = motor.name;
+        document.getElementById('sell-motor-price').value = '';
+        
+        document.getElementById('sell-modal').classList.add('active');
+    }
+
+    function closeSellModal() {
+        document.getElementById('sell-modal').classList.remove('active');
+    }
+
+    function mtSubmitSell(e) {
+        e.preventDefault();
+        const id = document.getElementById('sell-motor-id').value;
+        const sellDate = document.getElementById('sell-motor-date').value;
+        const sellPrice = parseFloat(document.getElementById('sell-motor-price').value);
+
+        const index = mtStok.findIndex(m => m.id === id);
+        if(index === -1) return;
+
+        const motor = mtStok[index];
+        const profit = sellPrice - motor.totalModal;
+
+        const soldItem = {
+            ...motor,
+            dateSell: sellDate,
+            priceSell: sellPrice,
+            profit: profit
+        };
+
+        // Move from Stok to Terjual
+        mtTerjual.push(soldItem);
+        mtStok.splice(index, 1);
+
+        localStorage.setItem('motor_stok', JSON.stringify(mtStok));
+        localStorage.setItem('motor_terjual', JSON.stringify(mtTerjual));
+
+        closeSellModal();
+        mtRender();
+    }
+
+    function mtDeleteTerjual(id) {
+        if(confirm('Hapus riwayat penjualan motor ini? Catatan profit akan terhapus.')) {
+            mtTerjual = mtTerjual.filter(item => item.id !== id);
+            localStorage.setItem('motor_terjual', JSON.stringify(mtTerjual));
+            mtRender();
+        }
+    }
+
+    // --- Pengeluaran Operasional ---
+    function mtAddExpense(e) {
+        e.preventDefault();
+        const date = document.getElementById('exp-input-date').value;
+        const desc = document.getElementById('exp-input-desc').value;
+        const amount = parseFloat(document.getElementById('exp-input-amount').value);
+
+        const newExp = {
+            id: 'exp_' + Date.now().toString(),
+            date: date,
+            desc: desc,
+            amount: amount
+        };
+
+        mtPengeluaran.push(newExp);
+        localStorage.setItem('motor_pengeluaran', JSON.stringify(mtPengeluaran));
+
+        // Reset form
+        document.getElementById('exp-input-desc').value = '';
+        document.getElementById('exp-input-amount').value = '';
+
+        mtRender();
+    }
+
+    function mtDeleteExpense(id) {
+        if(confirm('Hapus riwayat pengeluaran ini?')) {
+            mtPengeluaran = mtPengeluaran.filter(item => item.id !== id);
+            localStorage.setItem('motor_pengeluaran', JSON.stringify(mtPengeluaran));
+            mtRender();
+        }
+    }
+
+    // --- Reset Semua ---
+    function mtResetAllData() {
+        if(confirm('PERINGATAN BAHAYA: Semua data Stok, Penjualan, dan Pengeluaran akan dihapus secara permanen. Anda yakin?')) {
+            mtStok = [];
+            mtTerjual = [];
+            mtPengeluaran = [];
+            
+            localStorage.setItem('motor_stok', JSON.stringify(mtStok));
+            localStorage.setItem('motor_terjual', JSON.stringify(mtTerjual));
+            localStorage.setItem('motor_pengeluaran', JSON.stringify(mtPengeluaran));
+            
+            mtRender();
+        }
+    }
+
+    // ==============================================
+    // RENDER UI
+    // ==============================================
+    function mtRender() {
+        let modalTertahan = 0; 
+        let totalIncome = 0;
+        let profitKotor = 0;
+        let totalPengeluaran = 0;
+        
+        let monthIn = 0;
+        let monthOut = 0;
+
+        // Render STOK TABLE
+        const tbodyStok = document.getElementById('mt-table-stok');
+        tbodyStok.innerHTML = '';
+        const sortedStok = [...mtStok].sort((a, b) => new Date(b.dateBuy) - new Date(a.dateBuy));
+        
+        sortedStok.forEach(item => {
+            modalTertahan += item.totalModal; 
+            if(isSameMonth(item.dateBuy)) monthIn++;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight:500;">${item.name}</td>
+                <td>${formatDate(item.dateBuy)}</td>
+                <td>${formatRp(item.priceBuy)}</td>
+                <td>${formatRp(item.priceExtra)}</td>
+                <td style="font-weight:600;">${formatRp(item.totalModal)}</td>
+                <td><span class="badge badge-ready">READY</span></td>
+                <td style="text-align:right; min-width: 140px;">
+                    <button class="btn btn-primary btn-sm" onclick="openSellModal('${item.id}')">Jual</button>
+                    <button class="btn btn-danger btn-sm" onclick="mtDeleteStok('${item.id}')">Hapus</button>
+                </td>
+            `;
+            tbodyStok.appendChild(tr);
+        });
+
+        // Render TERJUAL TABLE
+        const tbodyTerjual = document.getElementById('mt-table-terjual');
+        tbodyTerjual.innerHTML = '';
+        const sortedTerjual = [...mtTerjual].sort((a, b) => new Date(b.dateSell) - new Date(a.dateSell));
+        
+        sortedTerjual.forEach(item => {
+            totalIncome += item.priceSell;
+            profitKotor += item.profit;
+            
+            if(isSameMonth(item.dateBuy)) monthIn++;
+            if(isSameMonth(item.dateSell)) monthOut++;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight:500;">${item.name}</td>
+                <td>${formatDate(item.dateBuy)}</td>
+                <td>${formatDate(item.dateSell)}</td>
+                <td>${formatRp(item.totalModal)}</td>
+                <td>${formatRp(item.priceSell)}</td>
+                <td class="text-green" style="font-weight:600;">${formatRp(item.profit)}</td>
+                <td style="text-align:right;">
+                    <button class="btn btn-danger btn-sm" onclick="mtDeleteTerjual('${item.id}')">Hapus</button>
+                </td>
+            `;
+            tbodyTerjual.appendChild(tr);
+        });
+
+        // Render PENGELUARAN TABLE
+        const tbodyExp = document.getElementById('exp-table-body');
+        tbodyExp.innerHTML = '';
+        const sortedExp = [...mtPengeluaran].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        sortedExp.forEach(item => {
+            totalPengeluaran += item.amount;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${formatDate(item.date)}</td>
+                <td style="font-weight:500;">${item.desc}</td>
+                <td class="text-red" style="font-weight:600;">${formatRp(item.amount)}</td>
+                <td style="text-align:right;">
+                    <button class="btn btn-danger btn-sm" onclick="mtDeleteExpense('${item.id}')">Hapus</button>
+                </td>
+            `;
+            tbodyExp.appendChild(tr);
+        });
+
+        // Calculate Final Finances
+        const profitBersih = profitKotor - totalPengeluaran;
+        const saldoTunaiKas = mtModalAwal - modalTertahan + profitBersih;
+
+        // Update Summaries UI
+        document.getElementById('mt-total-modal').innerText = formatRp(modalTertahan);
+        document.getElementById('mt-total-income').innerText = formatRp(totalIncome);
+        document.getElementById('mt-total-expense').innerText = formatRp(totalPengeluaran);
+        document.getElementById('mt-total-profit').innerText = formatRp(profitBersih);
+        document.getElementById('mt-saldo-akhir').innerText = formatRp(saldoTunaiKas);
+
+        // Update Stats UI
+        document.getElementById('mt-stat-in').innerText = monthIn;
+        document.getElementById('mt-stat-out').innerText = monthOut;
+        document.getElementById('mt-stat-stock').innerText = mtStok.length;
+    }
+
+    // ==============================================
+    // INIT
+    // ==============================================
+    window.onload = function() {
+        mtRender();
+    };
+
+</script>
+</body>
+</html>
